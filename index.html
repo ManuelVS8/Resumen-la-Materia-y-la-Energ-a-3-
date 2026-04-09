@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Materia y la Energía - Estudio y Test</title>
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        background: #f4f7fb;
+        color: #333;
+        line-height: 1.6;
+    }
+
+    header {
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+        color: white;
+        padding: 40px 20px;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    h1 { margin: 0; font-size: 2.5em; font-weight: 700; }
+    .header-subtitle { margin-top: 10px; font-size: 1.1em; opacity: 0.9; }
+
+    .container { padding: 20px; max-width: 900px; margin: auto; padding-bottom: 80px; }
+
+    /* ESTILOS ACORDEÓN */
+    details.card {
+        background: white;
+        margin-bottom: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: 1px solid #e1e1e1;
+    }
+
+    details.card:hover { box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+
+    summary {
+        background: #fff;
+        padding: 20px;
+        cursor: pointer;
+        font-size: 1.25em;
+        font-weight: 600;
+        color: #0077cc;
+        list-style: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        user-select: none;
+    }
+
+    summary::after {
+        content: '+';
+        font-size: 1.5em;
+        font-weight: bold;
+        transition: transform 0.3s;
+    }
+
+    details[open] summary::after { transform: rotate(45deg); color: #0056b3; }
+    details[open] summary { background-color: #f0f9ff; border-bottom: 1px solid #e0ecff; }
+
+    .card-content { padding: 25px; animation: fadeIn 0.4s ease-in; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+    h3 { color: #444; margin-top: 20px; font-size: 1.1em; border-left: 4px solid #4facfe; padding-left: 10px; }
+    ul { padding-left: 20px; }
+    li { margin-bottom: 8px; }
+    .subsection { margin-top: 15px; background: #fafafa; padding: 10px; border-radius: 8px; }
+    
+    .highlight {
+        background: #fff8e1;
+        padding: 15px;
+        border-left: 5px solid #ffb74d;
+        margin-top: 20px;
+        border-radius: 4px;
+        font-weight: bold;
+        color: #d35400;
+        text-align: center;
+        font-size: 1.1em;
+    }
+
+    /* BOTÓN DE TEST */
+    .test-trigger-container { text-align: center; margin: 40px 0; }
+    .btn-test {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        font-size: 1.2em;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(118, 75, 162, 0.4);
+        transition: transform 0.2s;
+        font-weight: bold;
+    }
+    .btn-test:hover { transform: translateY(-2px); }
+
+    /* MODAL / VENTANA DE TEST */
+    .modal-overlay {
+        display: none; 
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.8);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(5px);
+    }
+
+    .quiz-container {
+        background: white;
+        width: 90%;
+        max-width: 600px;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        text-align: center;
+        position: relative;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        font-size: 2em;
+        cursor: pointer;
+        color: #999;
+    }
+    .close-btn:hover { color: #333; }
+
+    .progress-bar {
+        width: 100%;
+        height: 10px;
+        background: #eee;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+    .progress-fill { height: 100%; background: #667eea; width: 0%; transition: width 0.3s ease; }
+
+    .question-text { font-size: 1.3em; margin-bottom: 25px; color: #333; font-weight: 600; }
+
+    .options-grid { display: grid; gap: 10px; }
+
+    .option-btn {
+        background: #f4f7fb;
+        border: 2px solid #e1e8ed;
+        padding: 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1em;
+        transition: all 0.2s;
+        text-align: left;
+        color: #555;
+    }
+    .option-btn:hover { background: #eef2f7; border-color: #667eea; }
+    .option-btn.selected {
+        background: #eef2f7;
+        border-color: #667eea;
+        font-weight: bold;
+        color: #333;
+    }
+    .option-btn.correct { background: #d4edda; border-color: #28a745; color: #155724; pointer-events: none; }
+    .option-btn.wrong { background: #f8d7da; border-color: #dc3545; color: #721c24; pointer-events: none; }
+
+    .quiz-nav { margin-top: 20px; display: flex; justify-content: space-between; }
+    .nav-btn {
+        background: #0077cc;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.9em;
+        opacity: 0.5;
+        pointer-events: none;
+    }
+    .nav-btn.active { opacity: 1; pointer-events: auto; }
+
+    .score-display { display: none; font-size: 1.5em; color: #28a745; margin-top: 20px; }
+
+    .footer { text-align: center; padding: 20px; font-size: 0.9em; color: #777; background: #e9ecef; margin-top: 20px; }
+
+    /* Utilidades para ocultar elementos */
+    .hidden { display: none !important; }
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>La Materia y la Energía</h1>
+    <div class="header-subtitle">Haz clic en los temas para estudiar. Luego, ¡pon a prueba tus conocimientos!</div>
+</header>
+
+<div class="container">
+
+    <!-- ACORDEÓN 1 -->
+    <details class="card">
+        <summary>1. La materia: masa y volumen</summary>
+        <div class="card-content">
+            <p>La materia es todo aquello que tiene masa y ocupa un volumen.</p>
+            <ul>
+                <li><strong>La masa:</strong> es la cantidad de materia que tiene un cuerpo. Se mide con básculas y balanzas y se expresa en kilogramos (kg) o gramos (g).</li>
+                <li><strong>El volumen:</strong> es el espacio que ocupa un cuerpo. Se mide con recipientes graduados y se expresa en litros (L).</li>
+            </ul>
+        </div>
+    </details>
+
+    <!-- ACORDEÓN 2 -->
+    <details class="card">
+        <summary>2. Estados de la materia</summary>
+        <div class="card-content">
+            <p>La materia puede presentarse en tres estados diferentes: sólido, líquido o gas. La materia puede cambiar de estado si aumentamos o disminuimos su temperatura.</p>
+            <ul>
+                <li><strong>Fusión:</strong> la materia pasa de estado sólido a líquido</li>
+                <li><strong>Evaporación:</strong> la materia pasa de estado líquido a gaseoso</li>
+                <li><strong>Condensación:</strong> la materia pasa de estado gaseoso a líquido</li>
+                <li><strong>Solidificación:</strong> la materia pasa de estado líquido a estado sólido</li>
+            </ul>
+        </div>
+    </details>
+
+    <!-- ACORDEÓN 3 -->
+    <details class="card">
+        <summary>3. Origen de los materiales</summary>
+        <div class="card-content">
+            <p>Podemos clasificar los materiales según su origen:</p>
+            <div class="subsection">
+                <p><strong>Materiales naturales:</strong> Obtenemos estos materiales directamente de la naturaleza. Pueden ser:</p>
+                <ul>
+                    <li>Origen animal: lana, cuero, seda</li>
+                    <li>Origen vegetal: algodón, madera, corcho</li>
+                    <li>Origen mineral: hierro, granito, cobre</li>
+                </ul>
+            </div>
+            <div class="subsection">
+                <p><strong>Materiales artificiales:</strong> son creados por los seres humanos; no existen en la naturaleza.</p>
+                <p>Ejemplos: petróleo → plástico, madera → papel, arena → vidrio.</p>
+            </div>
+        </div>
+    </details>
+
+    <!-- ACORDEÓN 4 -->
+    <details class="card">
+        <summary>4. Propiedades específicas de los materiales</summary>
+        <div class="card-content">
+            <p>Elegimos diferentes materiales para fabricar objetos según sus características.</p>
+            <ul>
+                <li><strong>Resistencia:</strong> si es difícil de romper: hormigón, roca, acero</li>
+                <li><strong>Plasticidad:</strong> si al deformarlo, mantiene la forma nueva: plastilina, arcilla</li>
+                <li><strong>Elasticidad:</strong> si al deformarlo, recupera su forma anterior: elástico, goma</li>
+                <li><strong>Solubilidad:</strong> si se disuelve en el agua: azúcar, sal</li>
+                <li><strong>Conductividad:</strong> si deja pasar la electricidad (conductor: cobre, hierro), o no la deja pasar (aislante: goma, plástico, madera)</li>
+                <li><strong>Flotabilidad:</strong> si flota en un líquido: madera, corcho</li>
+                <li><strong>Comportamiento ante la luz:</strong> transparente (cristal), opaco (madera) o traslúcido (mampara de baño)</li>
+            </ul>
+            <div class="highlight">
+                <strong>Regla mnemotécnica:</strong> Raúl Prepara El Solomillo Con Fuego Caliente
+            </div>
+        </div>
+    </details>
+
+    <!-- ACORDEÓN 5 -->
+    <details class="card">
+        <summary>5. Sustancias puras y mezclas</summary>
+        <div class="card-content">
+            <p>Las sustancias o materiales pueden presentarse de dos formas:</p>
+            <ul>
+                <li><strong>Sustancias puras:</strong> están compuestas por un solo componente: madera, agua</li>
+                <li><strong>Mezclas:</strong> están compuestas por más de un componente</li>
+            </ul>
+            <div class="subsection">
+                <p><strong>Tipos de mezclas:</strong></p>
+                <ul>
+                    <li><strong>Mezclas homogéneas:</strong> no se distinguen los componentes: batido, agua con sal</li>
+                    <li><strong>Mezclas heterogéneas:</strong> sí se distinguen los componentes: ensalada, agua y aceite</li>
+                </ul>
+            </div>
+        </div>
+    </details>
+
+    <!-- ACORDEÓN 6 -->
+    <details class="card">
+        <summary>6. Cambios físicos y cambios químicos</summary>
+        <div class="card-content">
+            <p>La materia puede experimentar cambios. Esos cambios pueden ser físicos o químicos.</p>
+            <div class="subsection">
+                <p><strong>Cambios físicos:</strong> no cambia la materia, solo cambia su apariencia.</p>
+                <ul>
+                    <li>Deformación: estirar una goma elástica</li>
+                    <li>Roturas: romper un papel en trozos</li>
+                    <li>Cambios de estado: chocolate pasa de sólido a líquido</li>
+                </ul>
+            </div>
+            <div class="subsection">
+                <p><strong>Cambios químicos:</strong> aparece un nuevo tipo de materia.</p>
+                <ul>
+                    <li>Oxidación: el hierro se transforma en óxido</li>
+                    <li>Combustión: el papel se transforma en cenizas</li>
+                    <li>Fermentación: microorganismos transforman alimentos: leche en yogur o queso</li>
+                </ul>
+            </div>
+        </div>
+    </details>
+
+    <!-- ACORDEÓN 7 -->
+    <details class="card">
+        <summary>7. La energía y sus formas</summary>
+        <div class="card-content">
+            <p>La energía es la capacidad de producir cambios en la materia. Se presenta en diferentes formas:</p>
+            <ul>
+                <li><strong>Energía mecánica</strong>: es la que tienen todos los objetos en movimiento.</li>
+                <li><strong>Energía térmica</strong>: es todo lo que desprende calor.</li>
+                <li><strong>Energía química</strong>: está contenida en alimentos, baterías y combustibles.</li>
+                <li><strong>Energía eléctrica</strong>: es todo lo que tiene electricidad.</li>
+                <li><strong>Energía luminosa</strong>: es todo lo que emite luz.</li>
+                <li><strong>Energía nuclear</strong>: está contenida en materiales como el plutonio y el uranio.</li>
+            </ul>
+            <div class="highlight">
+                <strong>Regla mnemotécnica:</strong> Mamá Tiene Queso En La Nevera
+            </div>
+            <p>La energía puede transformarse. Por ejemplo, la energía eléctrica puede convertirse en mecánica (ventilador), térmica (estufa) o luminosa (bombilla).</p>
+        </div>
+    </details>
+
+    <!-- ACORDEÓN 8 -->
+    <details class="card">
+        <summary>8. Fuentes de energía</summary>
+        <div class="card-content">
+            <p>Las fuentes son los recursos naturales de los que obtenemos energía.</p>
+            <div class="subsection">
+                <p><strong>Renovables:</strong> no se agotan con el uso y apenas contaminan.</p>
+                <ul>
+                    <li>Eólica: se obtiene del viento usando aerogeneradores.</li>
+                    <li>Hidroeléctrica: se obtiene del agua en centrales hidroeléctricas.</li>
+                    <li>Solar: se obtiene del sol mediante paneles solares.</li>
+                    <li>Biomasa: la obtenemos quemando restos de plantas de los bosques y cultivos</li>
+                </ul>
+            </div>
+            <div class="subsection">
+                <p><strong>No renovables:</strong> se agotan y contaminan.</p>
+                <ul>
+                    <li>Combustibles fósiles: carbón, petróleo y gas natural</li>
+                    <li>Materiales nucleares: uranio y plutonio</li>
+                </ul>
+            </div>
+        </div>
+    </details>
+
+    <!-- ACORDEÓN 9 -->
+    <details class="card">
+        <summary>9. Consumo responsable</summary>
+        <div class="card-content">
+            <p>Debemos cuidar nuestro planeta haciendo un uso responsable de la energía:</p>
+            <ul>
+                <li>Apagar la luz y dispositivos eléctricos que no estés usando</li>
+                <li>Usar el transporte público siempre que sea posible (autobús, tren, metro, etc.)</li>
+                <li>Reciclar, reutilizar y reducir el consumo</li>
+            </ul>
+        </div>
+    </details>
+
+    <div class="test-trigger-container">
+        <button class="btn-test" onclick="openModal()">🎯 Realizar Test de 25 Preguntas</button>
+    </div>
+
+</div>
+
+<div class="footer">
+    <p>Contenido completo sin resumir</p>
+</div>
+
+<!-- MODAL DEL TEST -->
+<div class="modal-overlay" id="quizModal">
+    <div class="quiz-container">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        
+        <!-- 1. Pantalla de Inicio -->
+        <div id="quiz-start">
+            <h2>¡Hora de poner a prueba lo aprendido!</h2>
+            <p>Responde 25 preguntas sobre la materia y la energía.</p>
+            <button class="option-btn" style="text-align:center; font-weight:bold; margin-top:20px; background:#667eea; color:white; border:none;" onclick="startGame()">Comenzar Test</button>
+        </div>
+
+        <!-- 2. Contenedor de Preguntas (Aquí están "creadas" en HTML) -->
+        <div id="quiz-game" class="hidden">
+            <div class="progress-bar"><div class="progress-fill" id="progressBar"></div></div>
+            <div id="questions-wrapper">
+                <!-- Las preguntas se muestran aquí una a una -->
+                
+                <!-- Pregunta 1 -->
+                <div class="question-slide hidden" data-ans="1">
+                    <div class="question-text">1. ¿Qué dos propiedades definitorias tiene la materia?</div>
+                    <div class="options-grid">
+                        <div class="option-btn" onclick="selectOption(this, 0)">Color y forma</div>
+                        <div class="option-btn" onclick="selectOption(this, 1)">Masa y volumen</div>
+                        <div class="option-btn" onclick="selectOption(this, 2)">Peso y altura</div>
+                        <div class="option-btn" onclick="selectOption(this, 3)">Tamaño y textura</div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 2 -->
+                <div class="question-slide hidden" data-ans="2">
+                    <div class="question-text">2. ¿Con qué instrumento se mide la masa?</div>
+                    <div class="options-grid">
+                        <div class="option-btn" onclick="selectOption(this, 0)">Termómetro</div>
+                        <div class="option-btn" onclick="selectOption(this, 1)">Regla</div>
+                        <div class="option-btn" onclick="selectOption(this, 2)">Báscula o balanza</div>
+                        <div class="option-btn" onclick="selectOption(this, 3)">Recipiente graduado</div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 3 -->
+                <div class="question-slide hidden" data-ans="2">
+                    <div class="question-text">3. ¿En qué unidades se expresa el volumen?</div>
+                    <div class="options-grid">
+                        <div class="option-btn" onclick="selectOption(this, 0)">Kilogramos o gramos</div>
+                        <div class="option-btn" onclick="selectOption(this, 1)">Metros o centímetros</div>
+                        <div class="option-btn" onclick="selectOption(this, 2)">Litros (L)</div>
+                        <div class="option-btn" onclick="selectOption(this, 3)">Wattios</div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 4 -->
+                <div class="question-slide hidden" data-ans="3">
+                    <div class="question-text">4. ¿Cómo se llama el paso de sólido a líquido?</div>
+                    <div class="options-grid">
+                        <div class="option-btn" onclick="selectOption(this, 0)">Evaporación</div>
+                        <div class="option-btn" onclick="selectOption(this, 1)">Solidificación</div>
+                        <div class="option-btn" onclick="selectOption(this, 2)">Condensación</div>
+                        <div class="option-btn" onclick="selectOption(this, 3)">Fusión</div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 5 -->
+                <div class="question-slide hidden" data-ans="0">
+                    <div class="question-text">5. ¿Qué cambio de estado es de líquido a gaseoso?</div>
+                    <div class="options-grid">
+                        <div class="option-btn" onclick="selectOption(this, 0)">Evaporación</div>
+                        <div class="option-btn" onclick="selectOption(this, 1)">Fusión</div>
+                        <div class="option-btn" onclick="selectOption(this, 2)">Solidificación</div>
+                        <div class="option-btn" onclick="selectOption(this, 3)">Condensación</div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 6 -->
+                <div class="question-slide hidden" data-ans="2">
+                    <div class="question-text">6. ¿Cuál es el origen del algodón?</div>
+                    <div class="options-grid">
+                        <div class="option-btn" onclick="selectOption(this, 0)">Animal</div>
+                        <div class="option-btn" onclick="selectOption(this, 1)">Mineral</div>
+                        <div class="option-btn" onclick="selectOption(this, 2)">Vegetal</div>
+                        <div class="option-btn" onclick="selectOption(this, 3)">Artificial</div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 7 -->
+                <div class="question-slide hidden" data-ans="1">
+                    <div class="question-text">7. ¿El cuero es un material de origen...?</div>
+                    <div class="options-grid">
+                        <div class="option-btn" onclick="selectOption(this, 0)">Vegetal</div>
+                        <div class="option-btn" onclick="selectOption(this, 1)">Animal</div>
+                        <div class="option-btn" onclick="selectOption(this, 2)">Mineral</div>
+                        <div class="option-btn" onclick="selectOption(this, 3)">Artificial</div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 8 -->
+                <div class="question-slide hidden" data-ans="3">
+                    <div class="question-text">8. ¿Qué material se obtiene del petróleo?</div>
+                    <div class="options-grid">
+                        <div class="option-btn" onclick="selectOption(this, 0)">Papel</div>
+                        <div class="option-btn" onclick="selectOption(this, 1)">Vidrio</div>
+                        <div class="option-btn" onclick="selectOption(this, 2)">Madera</div>
+                        <div class="option-btn" onclick="selectOption(this, 3)">Plástico</div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 9 -->
+                <div class="question-slide hidden" data-ans="1">
+                    <div class="question-text">9. ¿Qué propiedad tiene la arcilla al mantener su forma nueva?</div>
+                    <div class="options-grid">
+                        <div class="option-btn" onclick="selectOption(this, 0)">Elasticidad</div>
+                        <div class="option-btn" onclick="selectOption(this, 1)">Plasticidad</div>
+                        <div class="option-btn" onclick="selectOption(this, 2)">Resistencia</div>
+                        <div class="option-btn" onclick="selectOption(this, 3)">Solubilidad</div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 10 -->
+                <div class="question-slide hidden" data-ans="2">
+                    <div class="question-text">10. ¿Qué propiedad define que un material sea difícil de romper?</div>
+                    <div class="options-grid">
+                        <div class="option-btn" onclick="selectOption(this, 0)">Elasticidad</div>
+                        <div class="option-btn" onclick="selectOption(this, 1)">Flotabilidad</div>
+                        <div class="option-btn" onclick="selectOption(this, 2)">Resistencia</div>
+                        <div class="option-btn" onclick="selectOption(this, 3)">Conductividad</div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 11 -->
+                <div class="question-slide hidden" data-ans="0">
+                    <div class="question-text">11. ¿Qué material es conductor de electricidad?</div>
+                    <div class="options-grid">
+                        <div class="option-btn" onclick="selectOption(this, 0)">Cobre</div>
+                        <div class="option-btn" onclick="selectOption(this, 1)">Madera</div>
+                        <div class="option-btn" onclick="selectOption(this, 2)">Plástico</div>
+                        <div class="option-btn" onclick="selectOption(this, 3)">Goma</div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 12 -->
+                <div class="question-slide hidden" data-ans="1">
+                    <div class="question-text">12. Si un material se disuelve en agua, tiene...</div>
+                    <div class="options-grid">
+                        <div class="option-btn" onclick="selectOption(this, 0)">Elasticidad</div>
+                        <div class="option-btn" onclick="selectOption(this, 1)">Solubilidad</div>
+                        <div class="option-btn" onclick="selectOption(this, 2)">Flotabilidad</div>
+                        <div class="option-btn" onclick="selectOption(this, 3)">Opacidad</div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 13 -->
+                <div class="question-slide hidden" data-ans="0">
+                    <div class="question-text">13. La madera y el corcho tienen propiedad de...</div>
+                    <div class="options-grid">
+                        <div class="option-btn" onclick="selectOption(this, 0)">Flotabilidad</div>
+                        <div class="option-btn" onclick="selectOption(this, 1)">Conductividad</div>
+                        <div class="option-btn" onclick="selectOption(this, 2)">Transparencia</div>
+                        <div class="option-btn" onclick="selectOption(this, 3)">Plasticidad</div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 14 -->
+                <div class="question-slide hidden" data-ans="1">
+                    <div class="question-text">14. ¿Qué tipo de mezcla es un batido?</div>
+                    <div class="options-grid">
+                        <div class="option-btn" onclick="selectOption(this, 0)">Heterogénea</div>
+                        <div class="option-btn" onclick="selectOption(this, 1)">Homogénea</div>
+                        <div class="option-btn" onclick="selectOption(this, 2)">Sustancia pura</div>
+                        <div class="option-btn" onclick="selectOption(this, 3)">Simple</div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 15 -->
+                <div class="question-slide hidden" data-ans="1">
+                    <div class="question-text">15. ¿En una ensalada se distinguen los componentes, es una mezcla...?</div>
+                    <div class="options-grid">
+                        <div class="option-btn" onclick="selectOption(this, 0)">Homogénea</div>
+                        <div class="option-btn" onclick="selectOption(this, 1)">Heterogénea</div>
+                        <div class="option-btn" onclick="selectOption(this, 2)">Pura</div>
+                        <div class="option-btn" onclick="selectOption(this, 3)">Química</div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 16 -->
+                <div class="question-slide hidden" data-ans="1">
+                    <div class="question-text">16. ¿Qué tipo de cambio es romper un papel?</div>
+                    <div class="options-grid">
+                        <div class="option-btn" onclick="selectOption(this, 0)">Químico</div>
+                        <div class="option-btn" onclick="selectOption(this, 1)">Físico</div>
+                        <div class="option-btn" onclick="selectOption(this, 2)">Nuclear</div>
+                        <div class="option-btn" onclick="selectOption(this, 3)">De estado</div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 17 -->
+                <div class="question-slide hidden" data-ans="2">
+                    <div class="question-text">17. La oxidación del hierro es un cambio...</div>
+                    <div class="options-grid">
+                        <div class="option-btn" onclick="selectOption(this, 0)">Físico</div>
+                        <div class="option-btn" onclick="selectOption(this, 1)">De estado</div>
+                        <div class="option-btn" onclick="selectOption(this, 2)">Químico</div>
+                        <div class="option-btn" onclick="selectOption(this, 3)">Nuclear</div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 18 -->
+                <div class="question-slide hidden" data-ans="0">
+                    <div class="question-text">18. La transformación de leche en yogur es...</div>
+                    <div class="options-grid">
+                        <div class="option-btn" onclick="selectOption(this, 0)">Fermentación</div>
+                        <div class="option-btn" onclick="selectOption(this, 1)">Combustión</div>
+                        <div class="option-btn" onclick="selectOption(this, 2)">Oxidación</div>
+                        <div class="option-btn" onclick="selectOption(this, 3)">Evaporación</div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 19 -->
+                <div class="question-slide hidden" data-ans="0">
+                    <div class="question-text">19. Según la mnemotecnia 'Mamá Tiene Queso', ¿qué son las M, T y Q?</div>
+                    <div class="options-grid">
+                        <div class="option-btn" onclick="selectOption(this, 0)">Mecánica, Térmica, Química</div>
+                        <div class="option-btn" onclick="selectOption(this, 1)">Mecánica, Térmica, Luminosa</div>
+                        <div class="option-btn" onclick="selectOption(this, 2)">Química, Eléctrica, Nuclear</div>
+                        <div class="option-btn" onclick="selectOption(this, 3)">Solar, Eólica, Hidráulica</div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 20 -->
+                <div class="question-slide hidden" data-ans="3">
+                    <div class="question-text">20. ¿Qué tipo de energía está en los alimentos?</div>
+                    <div class="options-grid">
+                        <div class="option-btn" onclick="selectOption(this, 0)">Mecánica</div>
+                        <div class="option-btn" onclick="selectOption(this, 1)">Eléctrica</div>
+                        <div class="option-btn" onclick="selectOption(this, 2)">Luminosa</div>
+                        <div class="option-btn" onclick="selectOption(this, 3)">Química</div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 21 -->
+                <div class="question-slide hidden" data-ans="2">
+                    <div class="question-text">21. ¿La energía del viento es de origen...?</div>
+                    <div class="options-grid">
+                        <div class="option-btn" onclick="selectOption(this, 0)">Solar</div>
+                        <div class="option-btn" onclick="selectOption(this, 1)">Hidroeléctrico</div>
+                        <div class="option-btn" onclick="selectOption(this, 2)">Eólico</div>
+                        <div class="option-btn" onclick="selectOption(this, 3)">Nuclear</div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 22 -->
+                <div class="question-slide hidden" data-ans="1">
+                    <div class="question-text">22. ¿El carbón y el petróleo son energías...?</div>
+                    <div class="options-grid">
+                        <div class="option-btn" onclick="selectOption(this, 0)">Renovables</div>
+                        <div class="option-btn" onclick="selectOption(this, 1)">No renovables</div>
+                        <div class="option-btn" onclick="selectOption(this, 2)">Inagotables</div>
+                        <div class="option-btn" onclick="selectOption(this, 3)">Limpias</div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 23 -->
+                <div class="question-slide hidden" data-ans="2">
+                    <div class="question-text">23. ¿Qué energía se obtiene del sol?</div>
+                    <div class="options-grid">
+                        <div class="option-btn" onclick="selectOption(this, 0)">Eólica</div>
+                        <div class="option-btn" onclick="selectOption(this, 1)">Hidroeléctrica</div>
+                        <div class="option-btn" onclick="selectOption(this, 2)">Solar</div>
+                        <div class="option-btn" onclick="selectOption(this, 3)">Biomasa</div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 24 -->
+                <div class="question-slide hidden" data-ans="2">
+                    <div class="question-text">24. ¿Cuál es un consejo de consumo responsable?</div>
+                    <div class="options-grid">
+                        <div class="option-btn" onclick="selectOption(this, 0)">Dejar las luces encendidas</div>
+                        <div class="option-btn" onclick="selectOption(this, 1)">Usar siempre el coche</div>
+                        <div class="option-btn" onclick="selectOption(this, 2)">Reciclar y reutilizar</div>
+                        <div class="option-btn" onclick="selectOption(this, 3)">Comprar pilas nuevas</div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 25 -->
+                <div class="question-slide hidden" data-ans="1">
+                    <div class="question-text">25. Un material transparente (como el cristal)...</div>
+                    <div class="options-grid">
+                        <div class="option-btn" onclick="selectOption(this, 0)">No deja pasar la luz</div>
+                        <div class="option-btn" onclick="selectOption(this, 1)">Deja pasar toda la luz</div>
+                        <div class="option-btn" onclick="selectOption(this, 2)">Deja pasar parte de la luz</div>
+                        <div class="option-btn" onclick="selectOption(this, 3)">Es opaco</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="quiz-nav">
+                <button class="nav-btn" id="prevBtn" onclick="changeQuestion(-1)">Anterior</button>
+                <button class="nav-btn" id="nextBtn" onclick="changeQuestion(1)">Siguiente</button>
+            </div>
+        </div>
+
+        <!-- 3. Pantalla de Resultados -->
+        <div id="quiz-result" class="hidden">
+            <h2>¡Test Finalizado!</h2>
+            <div class="score-display" id="scoreText" style="display:block;">Puntuación: 0/25</div>
+            <div id="feedbackText" style="margin-top:10px; color:#666;"></div>
+            <button class="option-btn" style="text-align:center; margin-top:20px;" onclick="closeModal()">Cerrar</button>
+            <button class="option-btn" style="text-align:center; margin-top:10px;" onclick="resetQuiz()">Repetir</button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Lógica del Quiz
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.question-slide');
+    const totalQuestions = slides.length;
+    let score = 0;
+    let userAnswers = new Array(totalQuestions).fill(null); // Guarda índice de respuesta
+    let quizCompleted = false;
+
+    function openModal() {
+        document.getElementById('quizModal').style.display = 'flex';
+        document.getElementById('quiz-start').style.display = 'block';
+        document.getElementById('quiz-game').classList.add('hidden');
+        document.getElementById('quiz-result').classList.add('hidden');
+        resetQuizData();
+    }
+
+    function closeModal() {
+        document.getElementById('quizModal').style.display = 'none';
+    }
+
+    function startGame() {
+        document.getElementById('quiz-start').style.display = 'none';
+        document.getElementById('quiz-game').classList.remove('hidden');
+        showSlide(0);
+    }
+
+    function resetQuizData() {
+        currentSlide = 0;
+        score = 0;
+        userAnswers.fill(null);
+        quizCompleted = false;
+        
+        // Limpiar estilos visuales de respuestas anteriores
+        slides.forEach(slide => {
+            const options = slide.querySelectorAll('.option-btn');
+            options.forEach(opt => {
+                opt.className = 'option-btn';
+                opt.style.pointerEvents = 'auto'; // Reactivar clicks
+            });
+        });
+        updateProgress();
+    }
+
+    function resetQuiz() {
+        resetQuizData();
+        document.getElementById('quiz-result').classList.add('hidden');
+        document.getElementById('quiz-game').classList.remove('hidden');
+        showSlide(0);
+    }
+
+    function showSlide(index) {
+        // Ocultar todas
+        slides.forEach(slide => slide.classList.add('hidden'));
+        // Mostrar actual
+        slides[index].classList.remove('hidden');
+        
+        // Actualizar botones nav
+        document.getElementById('prevBtn').classList.toggle('active', index > 0);
+        
+        const nextBtn = document.getElementById('nextBtn');
+        if (index === totalQuestions - 1) {
+            nextBtn.innerText = "Ver Resultados";
+        } else {
+            nextBtn.innerText = "Siguiente";
+        }
+        
+        // Solo permitir avanzar si hay respuesta seleccionada (o si vamos hacia atrás)
+        // Si ya se completó el quiz, permitimos navegar libremente para ver respuestas
+        if (quizCompleted) {
+            nextBtn.classList.add('active');
+        } else {
+            nextBtn.classList.toggle('active', userAnswers[index] !== null);
+        }
+
+        updateProgress();
+    }
+
+    function selectOption(btn, optionIndex) {
+        if (quizCompleted) return; // No dejar cambiar respuestas si terminó
+
+        const slide = btn.closest('.question-slide');
+        const slideIndex = Array.from(slides).indexOf(slide);
+        
+        // Guardar respuesta del usuario
+        userAnswers[slideIndex] = optionIndex;
+
+        // Resetear estilos en esta pregunta
+        const options = slide.querySelectorAll('.option-btn');
+        options.forEach(opt => opt.classList.remove('selected'));
+
+        // Marcar seleccionada
+        btn.classList.add('selected');
+
+        // Activar botón siguiente
+        document.getElementById('nextBtn').classList.add('active');
+    }
+
+    function changeQuestion(direction) {
+        const newIndex = currentSlide + direction;
+
+        // Si intentamos ir a la siguiente desde la última pregunta y está respondida
+        if (direction === 1 && currentSlide === totalQuestions - 1) {
+            finishQuiz();
+            return;
+        }
+
+        if (newIndex >= 0 && newIndex < totalQuestions) {
+            currentSlide = newIndex;
+            showSlide(currentSlide);
+        }
+    }
+
+    function finishQuiz() {
+        // Calcular puntuación
+        score = 0;
+        slides.forEach((slide, index) => {
+            const correctAnswer = parseInt(slide.getAttribute('data-ans'));
+            const userAnswer = userAnswers[index];
+            
+            // Marcar visualmente correctas e incorrectas
+            const options = slide.querySelectorAll('.option-btn');
+            
+            // Deshabilitar clicks
+            options.forEach(opt => opt.style.pointerEvents = 'none');
+
+            if (userAnswer === correctAnswer) {
+                score++;
+                options[userAnswer].classList.add('correct');
+            } else {
+                if (userAnswer !== null) {
+                    options[userAnswer].classList.add('wrong');
+                }
+                options[correctAnswer].classList.add('correct');
+            }
+        });
+
+        quizCompleted = true;
+        document.getElementById('quiz-game').classList.add('hidden');
+        document.getElementById('quiz-result').classList.remove('hidden');
+        
+        document.getElementById('scoreText').innerText = "Tu puntuación: " + score + " / 25";
+        
+        let feedback = "";
+        if(score === 25) feedback = "¡Excelente! Eres un experto en Materia y Energía.";
+        else if(score >= 20) feedback = "¡Muy bien! Has aprobado con nota alta.";
+        else if(score >= 15) feedback = "Bien, pero repasa algunos conceptos.";
+        else feedback = "Sigue estudiando el contenido, ¡tú puedes!";
+        
+        document.getElementById('feedbackText').innerText = feedback;
+    }
+
+    function updateProgress() {
+        const percent = ((currentSlide) / totalQuestions) * 100;
+        document.getElementById('progressBar').style.width = percent + "%";
+    }
+</script>
+
+</body>
+</html>
