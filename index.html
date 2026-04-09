@@ -205,7 +205,8 @@
 
     <!-- ACORDEÓN 1 -->
     <details class="card">
-        <summary>1. La materia: masa y volumen</summary>
+        <!-- Sonido Tap añadido al abrir el acordeón -->
+        <summary onclick="reproducirSonidoTap()">1. La materia: masa y volumen</summary>
         <div class="card-content">
             <p>La materia es el componente de todo lo que existe. Tiene dos propiedades generales: masa y volumen.</p>
             <ul>
@@ -217,7 +218,7 @@
 
     <!-- ACORDEÓN 2 -->
     <details class="card">
-        <summary>2. Estados de la materia</summary>
+        <summary onclick="reproducirSonidoTap()">2. Estados de la materia</summary>
         <div class="card-content">
             <p>La materia puede presentarse en tres estados diferentes: <strong>sólido</strong>, <strong>líquido</strong> o <strong>gas</strong>. La materia puede cambiar de estado si aumentamos o disminuimos su temperatura.</p>
             <ul>
@@ -231,7 +232,7 @@
 
     <!-- ACORDEÓN 3 -->
     <details class="card">
-        <summary>3. Origen de los materiales</summary>
+        <summary onclick="reproducirSonidoTap()">3. Origen de los materiales</summary>
         <div class="card-content">
             <p>Podemos clasificar los materiales según su origen:</p>
             <div class="subsection">
@@ -251,7 +252,7 @@
 
     <!-- ACORDEÓN 4 -->
     <details class="card">
-        <summary>4. Propiedades específicas de los materiales</summary>
+        <summary onclick="reproducirSonidoTap()">4. Propiedades específicas de los materiales</summary>
         <div class="card-content">
             <p>Elegimos diferentes materiales para fabricar objetos según sus características.</p>
             <ul>
@@ -271,7 +272,7 @@
 
     <!-- ACORDEÓN 5 -->
     <details class="card">
-        <summary>5. Sustancias puras y mezclas</summary>
+        <summary onclick="reproducirSonidoTap()">5. Sustancias puras y mezclas</summary>
         <div class="card-content">
             <p>Las sustancias o materiales pueden presentarse de dos formas:</p>
             <ul>
@@ -290,7 +291,7 @@
 
     <!-- ACORDEÓN 6 -->
     <details class="card">
-        <summary>6. Cambios físicos y cambios químicos</summary>
+        <summary onclick="reproducirSonidoTap()">6. Cambios físicos y cambios químicos</summary>
         <div class="card-content">
             <p>La materia puede experimentar cambios. Esos cambios pueden ser físicos o químicos.</p>
             <div class="subsection">
@@ -314,7 +315,7 @@
 
     <!-- ACORDEÓN 7 -->
     <details class="card">
-        <summary>7. La energía y sus formas</summary>
+        <summary onclick="reproducirSonidoTap()">7. La energía y sus formas</summary>
         <div class="card-content">
             <p>La energía es la capacidad de producir cambios en la materia. Se presenta en diferentes formas:</p>
             <ul>
@@ -334,7 +335,7 @@
 
     <!-- ACORDEÓN 8 -->
     <details class="card">
-        <summary>8. Fuentes de energía</summary>
+        <summary onclick="reproducirSonidoTap()">8. Fuentes de energía</summary>
         <div class="card-content">
             <p>Las fuentes son los recursos naturales de los que obtenemos energía.</p>
             <div class="subsection">
@@ -358,7 +359,7 @@
 
     <!-- ACORDEÓN 9 -->
     <details class="card">
-        <summary>9. Consumo responsable</summary>
+        <summary onclick="reproducirSonidoTap()">9. Consumo responsable</summary>
         <div class="card-content">
             <p>Debemos cuidar nuestro planeta haciendo un uso responsable de la energía:</p>
             <ul>
@@ -370,6 +371,7 @@
     </details>
 
     <div class="test-trigger-container">
+        <!-- Sonido Tap añadido al botón principal del test -->
         <button class="btn-test" onclick="openModal()">🎯 Realizar Test de 25 Preguntas</button>
     </div>
 
@@ -693,15 +695,37 @@
 </div>
 
 <script>
-    // Lógica del Quiz
+    // --- CONFIGURACIÓN DE AUDIOS ---
+    const audioVictoria = new Audio("https://raw.githubusercontent.com/ManuelVS8/Efectos_audio/refs/heads/main/Termin%C3%A9.mp3");
+    const audioCompletado = new Audio("https://raw.githubusercontent.com/ManuelVS8/Efectos_audio/refs/heads/main/Completado.mp3");
+    const audioTap = new Audio("https://raw.githubusercontent.com/ManuelVS8/Efectos_audio/refs/heads/main/Tap.mp3");
+
+    // --- FUNCIONES DE SONIDO ---
+    function reproducirSonidoVictoria() {
+        audioVictoria.currentTime = 0; 
+        audioVictoria.play().catch(e => console.log("Audio bloqueado por el navegador"));
+    }
+
+    function reproducirSonidoCompletado() {
+        audioCompletado.currentTime = 0;
+        audioCompletado.play().catch(e => console.log("Audio bloqueado por el navegador"));
+    }
+
+    function reproducirSonidoTap() {
+        audioTap.currentTime = 0;
+        audioTap.play().catch(e => console.log("Audio tap bloqueado"));
+    }
+
+    // --- LÓGICA DEL QUIZ ---
     let currentSlide = 0;
     const slides = document.querySelectorAll('.question-slide');
     const totalQuestions = slides.length;
     let score = 0;
-    let userAnswers = new Array(totalQuestions).fill(null); // Guarda índice de respuesta
+    let userAnswers = new Array(totalQuestions).fill(null); 
     let quizCompleted = false;
 
     function openModal() {
+        reproducirSonidoTap(); // Sonido al abrir el modal
         document.getElementById('quizModal').style.display = 'flex';
         document.getElementById('quiz-start').style.display = 'block';
         document.getElementById('quiz-game').classList.add('hidden');
@@ -710,10 +734,12 @@
     }
 
     function closeModal() {
+        reproducirSonidoTap(); // Sonido al cerrar
         document.getElementById('quizModal').style.display = 'none';
     }
 
     function startGame() {
+        reproducirSonidoTap(); // Sonido al comenzar
         document.getElementById('quiz-start').style.display = 'none';
         document.getElementById('quiz-game').classList.remove('hidden');
         showSlide(0);
@@ -725,18 +751,18 @@
         userAnswers.fill(null);
         quizCompleted = false;
         
-        // Limpiar estilos visuales de respuestas anteriores
         slides.forEach(slide => {
             const options = slide.querySelectorAll('.option-btn');
             options.forEach(opt => {
                 opt.className = 'option-btn';
-                opt.style.pointerEvents = 'auto'; // Reactivar clicks
+                opt.style.pointerEvents = 'auto'; 
             });
         });
         updateProgress();
     }
 
     function resetQuiz() {
+        reproducirSonidoTap(); // Sonido al repetir
         resetQuizData();
         document.getElementById('quiz-result').classList.add('hidden');
         document.getElementById('quiz-game').classList.remove('hidden');
@@ -744,12 +770,9 @@
     }
 
     function showSlide(index) {
-        // Ocultar todas
         slides.forEach(slide => slide.classList.add('hidden'));
-        // Mostrar actual
         slides[index].classList.remove('hidden');
         
-        // Actualizar botones nav
         document.getElementById('prevBtn').classList.toggle('active', index > 0);
         
         const nextBtn = document.getElementById('nextBtn');
@@ -759,8 +782,6 @@
             nextBtn.innerText = "Siguiente";
         }
         
-        // Solo permitir avanzar si hay respuesta seleccionada (o si vamos hacia atrás)
-        // Si ya se completó el quiz, permitimos navegar libremente para ver respuestas
         if (quizCompleted) {
             nextBtn.classList.add('active');
         } else {
@@ -771,29 +792,27 @@
     }
 
     function selectOption(btn, optionIndex) {
-        if (quizCompleted) return; // No dejar cambiar respuestas si terminó
+        if (quizCompleted) return;
+
+        reproducirSonidoTap(); // Sonido al seleccionar opción
 
         const slide = btn.closest('.question-slide');
         const slideIndex = Array.from(slides).indexOf(slide);
         
-        // Guardar respuesta del usuario
         userAnswers[slideIndex] = optionIndex;
 
-        // Resetear estilos en esta pregunta
         const options = slide.querySelectorAll('.option-btn');
         options.forEach(opt => opt.classList.remove('selected'));
 
-        // Marcar seleccionada
         btn.classList.add('selected');
-
-        // Activar botón siguiente
         document.getElementById('nextBtn').classList.add('active');
     }
 
     function changeQuestion(direction) {
+        reproducirSonidoTap(); // Sonido al navegar (anterior/siguiente)
+        
         const newIndex = currentSlide + direction;
 
-        // Si intentamos ir a la siguiente desde la última pregunta y está respondida
         if (direction === 1 && currentSlide === totalQuestions - 1) {
             finishQuiz();
             return;
@@ -806,16 +825,12 @@
     }
 
     function finishQuiz() {
-        // Calcular puntuación
         score = 0;
         slides.forEach((slide, index) => {
             const correctAnswer = parseInt(slide.getAttribute('data-ans'));
             const userAnswer = userAnswers[index];
             
-            // Marcar visualmente correctas e incorrectas
             const options = slide.querySelectorAll('.option-btn');
-            
-            // Deshabilitar clicks
             options.forEach(opt => opt.style.pointerEvents = 'none');
 
             if (userAnswer === correctAnswer) {
@@ -836,10 +851,17 @@
         document.getElementById('scoreText').innerText = "Tu puntuación: " + score + " / 25";
         
         let feedback = "";
-        if(score === 25) feedback = "¡Excelente! Eres un experto en Materia y Energía.";
-        else if(score >= 20) feedback = "¡Muy bien! Has aprobado con nota alta.";
-        else if(score >= 15) feedback = "Bien, pero repasa algunos conceptos.";
-        else feedback = "Sigue estudiando el contenido, ¡tú puedes!";
+        
+        // Lógica de Sonidos al finalizar
+        if(score === 25) {
+            feedback = "¡Excelente! Eres un experto en Materia y Energía.";
+            reproducirSonidoVictoria(); // 🏆 SONIDO VICTORIA
+        } else {
+            reproducirSonidoCompletado(); // 🎉 SONIDO COMPLETADO
+            if(score >= 20) feedback = "¡Muy bien! Has aprobado con nota alta.";
+            else if(score >= 15) feedback = "Bien, pero repasa algunos conceptos.";
+            else feedback = "Sigue estudiando el contenido, ¡tú puedes!";
+        }
         
         document.getElementById('feedbackText').innerText = feedback;
     }
